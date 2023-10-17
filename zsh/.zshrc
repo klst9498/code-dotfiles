@@ -4,6 +4,10 @@
 # Path to your oh-my-zsh installation.
 export ZSH="${HOME}/.oh-my-zsh"
 
+if [ ! -d ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting ]; then git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting; fi
+if [ ! -d ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions ]; then git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions; fi
+
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -78,7 +82,31 @@ fi
 
 # VS Code Containers
 if [[ ${REMOTE_CONTAINERS} ]] ; then
-  plugins=(docker git golang)
+  plugins=(
+    autojump
+    battery
+    colorize
+    docker
+    emacs
+    git-flow
+    git-prompt
+    git
+    history-sync
+    kubectl
+    k3d
+    last-working-dir
+    terraform
+    thefuck
+    helm
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    fzf
+    vault
+    sudo
+    web-search
+    z
+    jira
+)
 fi
 
 source $ZSH/oh-my-zsh.sh
@@ -136,6 +164,26 @@ fi
 # FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# AWS - This should be done in the `aws` plugin, but it cannot find
-# aws_completer at that point, so loading this here. Less than ideal
-complete -C aws_completer aws
+command -v flux >/dev/null && . <(flux completion zsh)
+command -v velero >/dev/null && . <(velero completion zsh)
+command -v helm >/dev/null && . <(helm completion zsh)
+command -v kubectl >/dev/null && . <(kubectl completion zsh)
+command -v tkn >/dev/null && . <(tkn completion zsh)
+command -v k3d >/dev/null && . <(k3d completion zsh)
+
+
+
+export ZSH_HISTORY_FILE_NAME=".zsh_history"
+export ZSH_HISTORY_FILE="${HOME}/${ZSH_HISTORY_FILE_NAME}"
+export ZSH_HISTORY_PROJ="${HOME}/.zsh_history_proj/zsh_history"
+export ZSH_HISTORY_FILE_ENC_NAME="zsh_history"
+export ZSH_HISTORY_FILE_ENC="${ZSH_HISTORY_PROJ}/${ZSH_HISTORY_FILE_ENC_NAME}"
+export ZSH_HISTORY_COMMIT_MSG="latest $(date)"
+
+
+alias kg="kubectl get"
+alias kgpo="kubectl get pods"
+alias kd="kubectl describe"
+alias kdpo="kubectl describe pods"
+alias krm="kubectl delete"
+alias krmf="kubectl delete -f"
